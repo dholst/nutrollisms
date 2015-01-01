@@ -1,0 +1,117 @@
+<html>
+  <head>
+  <title>nutrollisms</title>
+    <style type="text/css">
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      #container {
+        width: 100%;
+        height: 100%;
+        background-color: black;
+      }
+
+      .quote {
+        font-family: Helvetica,Arial,sans-serif;
+        font-style: italic;
+        font-size: 30px;
+        position: absolute;
+        padding-right: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container"></div>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/prototype/1.6.0.2/prototype.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/scriptaculous/1.8.1/scriptaculous.js"></script>
+    <script type="text/javascript">
+      var Random = {
+        number: function(max) {
+          return Math.floor(Math.random() * max);
+        }
+      }
+
+      var Randomizer = Class.create({
+        initialize: function(stuff) {
+          this.temp = [];
+          this.stuff = stuff;
+        },
+
+        next: function() {
+          if(this.temp.length == 0) {
+            this.temp = this.stuff.clone();
+          }
+
+          var the_one = this.temp[Random.number(this.temp.length)];
+          this.temp = this.temp.without(the_one);
+          return the_one;
+        }
+      });
+
+      var nutrollisms = function() {
+        var colors = new Randomizer([
+          '#A839B2',
+          '#FF0071',
+          '#ACD030',
+          '#58AA00',
+          '#00AA78',
+          '#0074AE'
+        ]);
+
+        var isms = new Randomizer([
+          'AHHHHHH!!! Spider.',
+          '...McDoogles...',
+          'Look at all them Escorts for sale.',
+          'Owwww, stop it, that hurts my ears.',
+          'What?',
+          'Make it look like the picture.',
+          'They have the best onion rings.',
+          'That\'s a lot of food.',
+          'Mmmm, I\'ll have to remember this recipe.',
+          'I want to eat me a hot roast beef sandwich.',
+          'Somewhere that doesn\'t serve fries.',
+          'That\'s cool.',
+          'That\'s interesting.',
+          'That pelonis is looking at me.',
+          'The first song on Appetite for Destruction is Appetite for Destruction.',
+          'I couldn\'t get a tattoo, but check out my nipple ring.',
+          'Hey, do you have the new Dick Cheese album?',
+          'something about pie'
+        ]);
+
+        function get_one() {
+          var div = $(document.createElement('div'));
+          div.addClassName('quote');
+          div.update('"' + isms.next() + '"');
+          div.setStyle({display: 'none', color: colors.next()})
+          return div;
+        }
+
+        function set_position(div) {
+          var element = div.getDimensions();
+          var viewport = $('container').getDimensions();
+          var x = Random.number(viewport.width - element.width - 40) + 20;
+          var y = Random.number(viewport.height - element.height - 40) + 20;
+
+          return div.setStyle({
+            left: x + 'px',
+            top: y + 'px'
+          });
+        }
+
+        return {
+          start: function(){
+            var ism = get_one();
+            $('container').update(ism);
+            set_position(ism);
+            ism.appear({duration: .5}).fade({delay: 3.0, duration: .5, queue: 'end', afterFinish: this.start.bind(this)});
+          }
+        }
+      }();
+
+      document.observe('dom:loaded', function(){nutrollisms.start()});
+    </script>
+  </body>
+</html>
